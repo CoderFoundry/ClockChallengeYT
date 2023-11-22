@@ -7,22 +7,23 @@
 <h3>Calculate the angle of the hour and minute hands for any given time</h3>
 <div class="row">
     <div class="col-12 col-lg-4">
-        <EditForm EditContext="@editContext">
+        <EditForm EditContext="@editContext" OnValidSubmit="HandleSubmit">
             <DataAnnotationsValidator />
             <div class="mb-3">
                 <label for="hour" class="form-label">Hour</label>
-                <InputNumber class="form-control" id="hour" @bind-Value="pm.hour"></InputNumber>
+                <InputNumber class="form-control" id="hour" @bind-Value="pm.hour" @bind-Value:after="HandleSubmit"></InputNumber>
                 <ValidationMessage For="() => pm.hour"/>
             </div>
             <div class="mb-3">
                 <label for="minute" class="form-label">Minute</label>
-                <InputNumber class="form-control" id="mintue" @bind-Value="pm.minute"></InputNumber>
+                <InputNumber class="form-control" id="mintue" @bind-Value="pm.minute" @bind-Value:after="HandleSubmit"></InputNumber>
                 <ValidationMessage For="() => pm.minute"/>
             </div>
             <div class="mb-3">
                 <button class="btn btn-primary">Calculate</button>
             </div>
         </EditForm>
+        <h4>@message</h4>
     </div>
     <div class="col-12 col-lg-8">
         <div class="clock">
@@ -39,11 +40,56 @@
 @code{
     private pageModel pm = new();
     private EditContext? editContext;
+    private string message = "";
 
     protected override void OnInitialized()
     {
         editContext = new EditContext(pm);
+        HandleSubmit();
     }
+
+    private void HandleSubmit()
+    {
+        try
+        {
+            var angle = GetAngle(pm.hour, pm.minute);
+            message = $"The angle between the hour and minute hands is {angle} degress.";
+        }
+        catch(Exception ex)
+        {
+            message = ex.Message;
+        }
+        
+    }
+
+    private decimal GetAngle(int hour, int minute)
+    {
+
+        if (hour < 0 || hour > 23 || minute < 0 || minute > 59)
+        {
+            throw new ArgumentException("Invalid Time Entered!!");
+        }
+
+        if (hour > 11)
+        {
+            hour = hour - 12;
+        }
+
+        //360/60 = 6
+        //360/12 = 30
+        var minuteAngle = minute * 6;
+        var hourAngle = (hour * 30) + (minuteAngle / 12);
+
+        var angle = Math.Abs(hourAngle - minuteAngle);
+
+        if (angle > 180)
+        {
+            angle = 360 - angle;
+        }
+
+        return angle;
+    }
+
 
     public class pageModel
     {
