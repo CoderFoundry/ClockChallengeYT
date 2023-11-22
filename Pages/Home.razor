@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using System.ComponentModel.DataAnnotations;
 
 <PageTitle>Clock Hands Coding Challenge</PageTitle>
 
@@ -22,5 +23,22 @@
 
 
 @code{
+    private pageModel pm = new();
+    private EditContext? editContext;
 
+    protected override void OnInitialized()
+    {
+        editContext = new EditContext(pm);
+    }
+
+    public class pageModel
+    {
+        [Required]
+        [Range(0,12, ErrorMessage ="Hour must be between 0 and 12")]
+        public int hour { get; set; } = 3;
+
+        [Required]
+        [Range(0,59, ErrorMessage ="Minute must be between 0 and 60")]
+        public int minute { get; set; } = 30;
+    }
 }
