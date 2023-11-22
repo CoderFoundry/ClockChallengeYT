@@ -6,9 +6,23 @@
 <h1>Clock Coding Challnege</h1>
 <h3>Calculate the angle of the hour and minute hands for any given time</h3>
 <div class="row">
-
     <div class="col-12 col-lg-4">
-
+        <EditForm EditContext="@editContext">
+            <DataAnnotationsValidator />
+            <div class="mb-3">
+                <label for="hour" class="form-label">Hour</label>
+                <InputNumber class="form-control" id="hour" @bind-Value="pm.hour"></InputNumber>
+                <ValidationMessage For="() => pm.hour"/>
+            </div>
+            <div class="mb-3">
+                <label for="minute" class="form-label">Minute</label>
+                <InputNumber class="form-control" id="mintue" @bind-Value="pm.minute"></InputNumber>
+                <ValidationMessage For="() => pm.minute"/>
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-primary">Calculate</button>
+            </div>
+        </EditForm>
     </div>
     <div class="col-12 col-lg-8">
         <div class="clock">
